@@ -26,7 +26,7 @@ public sealed class HashWordSet : IWordSet
         return words.Remove(word);
     }
 
-
+    /// TODO
     public string? Prev(string word)
     {
         throw new NotImplementedException();
@@ -67,6 +67,7 @@ public sealed class HashWordSet : IWordSet
         return results.Slice(0, Math.Min(k, results.Count));
     }
 
+    /// TODO
     public IEnumerable<string> Range(string lo, string hi, int k)
     {
         throw new NotImplementedException();
