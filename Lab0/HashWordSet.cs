@@ -13,16 +13,28 @@ public sealed class HashWordSet : IWordSet
 
     public bool Add(string word)
     {
+        var normalizedWord = Normalize(word);
+        if (normalizedWord.Length == 0)
+            return false;
+
         return words.Add(word);
     }
 
     public bool Contains(string word)
     {
+        var normalizedWord = Normalize(word);
+        if (normalizedWord.Length == 0)
+            return false;
+
         return words.Contains(word);
     }
 
     public bool Remove(string word)
     {
+        var normalizedWord = Normalize(word);
+        if (normalizedWord.Length == 0)
+            return false;
+
         return words.Remove(word);
     }
 
@@ -34,13 +46,17 @@ public sealed class HashWordSet : IWordSet
 
     public string? Next(string word)
     {
+        var normalizedWord = Normalize(word);
+        if (normalizedWord.Length == 0)
+            return null;
+
         string? best = null;
 
         // look for a better best
-        foreach(var w in words)
+        foreach (var w in words)
         {
             // word < w && w < best
-            if( word.CompareTo(w) < 0
+            if (word.CompareTo(w) < 0
                 && (best is null || w.CompareTo(best) < 0))
             {
                 best = w;
@@ -54,9 +70,9 @@ public sealed class HashWordSet : IWordSet
     {
         var results = new List<string>();
 
-        foreach(var word in words)
+        foreach (var word in words)
         {
-            if(word.StartsWith(prefix))
+            if (word.StartsWith(prefix))
             {
                 results.Add(word);
             }
@@ -71,6 +87,19 @@ public sealed class HashWordSet : IWordSet
     public IEnumerable<string> Range(string lo, string hi, int k)
     {
         throw new NotImplementedException();
+    }
+    /// <summary>
+    /// Normalize a word by trimming whitespace and converting to lowercase.
+    /// </summary>
+    /// <param name="word">The word to normalize.</param>
+    /// <returns>The normalized word.</returns>
+    private string Normalize(string word)
+    {
+        if (string.IsNullOrWhiteSpace(word))
+            return string.Empty;
+
+        // Trim and lowercase 
+        return word.Trim().ToLowerInvariant();
     }
 
 }
