@@ -1,4 +1,3 @@
-
 // [ "ryan", "beau", "caleb", "rye", 
 // "beautiful", "cale", "cephas", "rhino", "cervid", "cecily"
 // "ethan" , "ethel"]
@@ -68,11 +67,13 @@ public sealed class HashWordSet : IWordSet
 
     public IEnumerable<string> Prefix(string prefix, int k)
     {
+        var normalizedPrefix = Normalize(prefix);
+
         var results = new List<string>();
 
         foreach (var word in words)
         {
-            if (word.StartsWith(prefix))
+            if (word.StartsWith(normalizedPrefix))
             {
                 results.Add(word);
             }
@@ -101,5 +102,4 @@ public sealed class HashWordSet : IWordSet
         // Trim and lowercase 
         return word.Trim().ToLowerInvariant();
     }
-
 }
