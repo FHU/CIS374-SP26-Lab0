@@ -4,87 +4,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a C# project for CIS 374 (Algorithms course at Freed-Hardeman University). The labs contain data structure implementations, starting with Lab0 which implements a `WordSet` interface for efficient string lookup and lexicographic operations.
+C# project for CIS 374 (Algorithms) at Freed-Hardeman University. Implements data structure labs with a focus on efficient string lookup and lexicographic operations.
 
 **Framework:** .NET 9.0
 
 ## Architecture
 
-### Lab0: WordSet Implementation
+### IWordSet Interface
 
-**Core Concept:** The lab implements the `IWordSet` interface, which provides operations on a collection of words:
+The `IWordSet` interface defines operations on a word collection:
 
-- **Basic operations:** `Add()`, `Remove()`, `Contains()` for set membership
-- **Lexicographic neighbors:** `Next()` and `Prev()` to find immediate successors/predecessors in alphabetical order
-- **Prefix queries:** `Prefix(prefix, k)` to find up to k words starting with a given prefix
-- **Range queries:** `Range(lo, hi, k)` to find up to k words in a lexicographic range [lo, hi]
+- **Basic operations:** `Add()`, `Remove()`, `Contains()` for O(1) or O(log n) set membership
+- **Lexicographic neighbors:** `Next()` and `Prev()` to find immediate successors/predecessors
+- **Prefix queries:** `Prefix(prefix, k)` returns up to k words starting with a given prefix, sorted
+- **Range queries:** `Range(lo, hi, k)` returns up to k words in lexicographic range [lo, hi], sorted
 
-**Current Implementation:** `HashWordSet` uses a simple `HashSet<string>` backend. This provides O(1) basic operations but requires O(n log n) sorting for ordered operations like prefix/range queries.
+### Implementations
 
-**Key Files:**
-- `Lab0/IWordSet.cs`: Interface definition
-- `Lab0/HashWordSet.cs`: Reference implementation using HashSet
-- `Lab0/Program.cs`: Entry point
-- `Lab0.Tests/HashWordSetTests.cs`: MSTest unit tests
+- **`HashWordSet`** - Uses `HashSet<string>`. O(1) basic ops, O(n log n) for ordered ops (scans and sorts).
+- **`SortedWordSet`** - Uses `SortedSet<string>`. O(log n) basic ops, O(k) for prefix/range via `GetViewBetween()`.
 
-The comment block at the top of `HashWordSet.cs` (lines 2-4) shows sample data for testing.
+Both implementations normalize input (trim + lowercase) and use the same sample test data in their header comments.
 
-**Test Framework:** MSTest (Microsoft.VisualStudio.TestTools.UnitTesting) with implicit usings enabled.
+### Key Files
+
+- `Lab0/IWordSet.cs` - Interface definition
+- `Lab0/HashWordSet.cs` - Reference implementation (some methods throw `NotImplementedException`)
+- `Lab0/SortedWordSet.cs` - Alternative implementation using sorted data structure
+- `Lab0.Tests/HashWordSetTests.cs` and `SortedWordSetTests.cs` - MSTest unit tests
 
 ## Common Commands
 
-### Build
 ```bash
+# Build
 dotnet build
-```
 
-Build the entire solution (all projects in labs.sln).
-
-### Run
-```bash
+# Run
 dotnet run --project Lab0
-```
 
-Run the Lab0 project.
-
-### Clean
-```bash
-dotnet clean
-```
-
-Remove build artifacts (bin/ and obj/ directories).
-
-### Restore Dependencies
-```bash
-dotnet restore
-```
-
-Restore NuGet packages if needed.
-
-### Run Tests
-```bash
+# Run all tests
 dotnet test
-```
 
-Run all tests in the solution (uses MSTest framework).
-
-### Run Specific Test
-```bash
+# Run specific test by name pattern
 dotnet test --filter "FullyQualifiedName~TestNext"
+
+# Run tests for specific class
+dotnet test --filter "FullyQualifiedName~SortedWordSetTests"
 ```
 
-Run tests matching a specific name pattern.
+## Configuration
 
-## Key Configuration
-
-- **Solution file:** `labs.sln`
+- **Solution file:** `Lab0.sln`
 - **Target framework:** net9.0
-- **Nullable reference types:** Enabled (`<Nullable>enable</Nullable>`)
-- **Implicit usings:** Enabled (global `using` statements)
-- **Output type:** Executable (Exe)
+- **Nullable reference types:** Enabled
+- **Implicit usings:** Enabled
+- **Test framework:** MSTest
 
 ## Development Notes
 
-- The project uses C# 12+ features (record types, nullable reference types, init accessors)
-- `IWordSet` is designed to support multiple implementations (e.g., TreeSet-like structures for better ordered operation performance)
-- Some methods in `HashWordSet` raise `NotImplementedException()` and will need to be completed as part of the lab work
+- Methods marked with `// TODO` or throwing `NotImplementedException()` are lab exercises to complete
+- The `SortedWordSet.Prefix()` method has hardcoded test values that need to be replaced with actual logic
+- `MAX_STRING` constant (`"\uFFFF\uFFFF\uFFFF"`) in SortedWordSet is used as an upper bound for `GetViewBetween()` range queries
